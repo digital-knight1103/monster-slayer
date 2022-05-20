@@ -47,6 +47,10 @@ section {
   border-radius: 12px;
 }
 
+.box {
+  width: 400px;
+}
+
 #monster h2,
 #player h2 {
   margin: 0.25rem;
