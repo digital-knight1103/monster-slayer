@@ -12,12 +12,20 @@ const app = Vue.createApp({
       witcherHealth: 100,
       monsterHealth: 100,
       currentRound: 0,
+      winner: null,
     }
   },
   methods: {
+    // start new game => reset all value
+    startNewGame() {
+      this.witcherHealth = 100;
+      this.monsterHealth = 100;
+      this.currentRound = 0;
+      this.winner = null;
+    },
     weAttackMonster() {
       this.currentRound++
-      //caltulate our attack about 20-10 power
+      //caltulate our attack about 16-8 power
       const attackValue = getRandomAttack(8,16)
       this.monsterHealth = this.monsterHealth - attackValue
       // after our attack time to monsterAttack
@@ -45,11 +53,39 @@ const app = Vue.createApp({
       
     }
   },
+  watch: {
+  // observe a value whitch we have a data
+    witcherHealth(value) {
+      if(value <= 0 && this.monsterHealth <= 0) {
+        // We have a draw
+        this.winner = 'draw'
+      } else if (value <= 0) {
+        // Witcher Lost
+        this.winner = 'monster'
+      }
+    },
+    monsterHealth(value) {
+      if(value <= 0 && this.witcherHealth <= 0) {
+        // We have a draw
+        this.winner = 'draw'
+      } else if (value <= 0) {
+        // Monster Lost
+        this.winner = 'witcher'
+
+      }
+    }
+  },
   computed: {
     monsterBar() {
+      if(this.monsterHealth < 0) {
+        return { width: '0%'}
+      }
       return {width: this.monsterHealth + '%'}
     },
     witcherBar() {
+      if(this.witcherHealth < 0) {
+        return {width: '0%'}
+      }
       return {width: this.witcherHealth + '%'}
     },
     specialAttackWitcher() {

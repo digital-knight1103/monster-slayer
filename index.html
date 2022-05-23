@@ -31,6 +31,19 @@
           <div class="healthbar__value" v-bind:style="witcherBar"></div>
         </div>
       </section>
+
+      <!-- Show this section when change the value in winner data -->
+      <!-- if winner = TRUE show secion / default winner = null -->
+
+      <section class="container" v-if="winner"> 
+        <h2>Game Over</h2>
+        <h3 v-if="winner === 'monster'">You Lost!</h3>
+        <h3 v-else-if="winner === 'witcher'">You Win!!!</h3>
+        <h3 v-else="winner === 'draw'">It-s a draw</h3>
+        <button v-on:click="startNewGame">Start New Game</button>
+      </section>
+
+
       <section id="controls">
         <button v-on:click="weAttackMonster">ATTACK</button>
         <button v-bind:disabled="specialAttackWitcher" v-on:click="specialAttack">SPECIAL ATTACK</button>
