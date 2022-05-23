@@ -3,8 +3,6 @@ const getRandomAttack = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-
-
 const app = Vue.createApp({
   data() {
 
@@ -13,6 +11,7 @@ const app = Vue.createApp({
       monsterHealth: 100,
       currentRound: 0,
       winner: null,
+      logMessages: []
     }
   },
   methods: {
@@ -22,23 +21,30 @@ const app = Vue.createApp({
       this.monsterHealth = 100;
       this.currentRound = 0;
       this.winner = null;
+      // we clean our battle log array 
+      this.logMessages = []
     },
     weAttackMonster() {
       this.currentRound++
       //caltulate our attack about 16-8 power
       const attackValue = getRandomAttack(8,16)
       this.monsterHealth = this.monsterHealth - attackValue
+
+      // add log information(player attack monster)
+      this.addLogMsg('witcher', 'attack', attackValue);
       // after our attack time to monsterAttack
       this.mosterAttackTheWitcher()
     },
     mosterAttackTheWitcher() {
       const attackValue = getRandomAttack(6,18)
       this.witcherHealth = this.witcherHealth - attackValue
+      this.addLogMsg('monster', 'attack', attackValue);
     },
     specialAttack() {
       this.currentRound++
       const specialAttackValue = getRandomAttack(10,25)
-      this.monsterHealth =  this.monsterHealth - specialAttackValue
+      this.monsterHealth =  this.monsterHealth - specialAttackValue;
+      this.addLogMsg('witcher', 'special-attack', specialAttackValue);
       this.mosterAttackTheWitcher()
     },
     healWitcher() {
@@ -49,9 +55,23 @@ const app = Vue.createApp({
       } else {
         this.witcherHealth = this.witcherHealth + healValue
       }
+      this.addLogMsg('witcher', 'heal', healValue);
       this.mosterAttackTheWitcher()
-      
-    }
+    },
+    surrender() {
+      this.winner = 'monster'
+    },
+    // This methods we have a 3 argument
+    // who - witcher or monster
+    // what - attack, heal, surrender
+    // value - hum much attack value, heal value 
+    addLogMsg(who, what, value) {
+      this.logMessages.unshift({
+        actionBy: who,
+        actionType: what,
+        actionValue: value,
+      });
+    },
   },
   watch: {
   // observe a value whitch we have a data

@@ -43,16 +43,31 @@
         <button v-on:click="startNewGame">Start New Game</button>
       </section>
 
-
-      <section id="controls">
+<!-- We can use v-else becouse it is directly under v-if (container above) -->
+<!-- Thanks to !winner we block game keys and cannnot use them after the fight -->
+      <section id="controls" v-else="!winner">
         <button v-on:click="weAttackMonster">ATTACK</button>
         <button v-bind:disabled="specialAttackWitcher" v-on:click="specialAttack">SPECIAL ATTACK</button>
         <button v-on:click="healWitcher">HEAL</button>
-        <button>SURRENDER</button>
+        <button v-on:click="surrender">SURRENDER</button>
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li v-for="logMessage in logMessages">
+            <!-- {{ logMessage.actionBy }} - {{ logMessage.actionType}}: {{logMessage.actionValue}} -->
+            <!-- below we have better solution -->
+            <span v-bind:class="{'log--witcher': logMessage.actionBy === 'witcher',
+              'log--monster': logMessage.actionBy === 'monster'}">
+              {{ logMessage.actionBy === 'witcher' ? 'Witcher' : 'Monster'}}
+            </span>
+
+            <span v-if="logMessage.actionType === 'heal'"> Heals Himself for <span class="log--heal">{{logMessage.actionValue}}</span></span>
+            <span v-else>
+              attacks and deals <span class="log--damage">{{logMessage.actionValue}}</span>
+            </span>
+          </li>
+        </ul>
       </section>
     </div>
   </body>
